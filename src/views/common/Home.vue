@@ -1,5 +1,4 @@
 <template>
-    <Nav style="height: 0;"></Nav>
     <div class="content">
       <a-carousel arrows autoplay="true" effect="fade">
         <template #prevArrow>
@@ -16,12 +15,11 @@
           <img :src="item"/>
           <div class="img-word">
             <div style="margin-bottom:30px">
-              <h2>AI Diagnosis System Is Always With You</h2>
+              <h2>Diabetes AI Diagnosis System</h2>
             </div>
-            <a-button type="primary" shape="round" style="height: 50px;width: 200px;">
+            <a-button @click="$router.push({name:'Diabetes'})" type="primary" shape="round" style="height: 50px;width: 200px;">
               <div style="display: flex;justify-content: center;align-items: center">
                 <span style="font-weight: bold; font-size: 20px">GET STARTED&nbsp;</span>
-                <arrow-right-outlined style="font-size: 25px; font-weight: bold"/>
               </div>
 
             </a-button>
@@ -31,14 +29,10 @@
     </div>
 </template>
 <script setup>
-import { defineComponent,  ref } from 'vue';
-import navRoutes from '@/utils/nav'
-import Nav from '@/views/common/Nav'
-import { LeftOutlined, RightOutlined, ArrowRightOutlined } from '@ant-design/icons-vue';
 
 const displayImg = [
     require('@/assets/img/home1.jpg'),
-    require('@/assets/img/home2.jpg'),
+    require('@/assets/img/home2.png'),
 ]
 
 

@@ -8,8 +8,12 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
+    "amfe-flexible": "^2.2.1",
     "axios": "^0.26.1",
     "core-js": "^3.6.5",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
+    "postcss-px2rem": "^0.3.0",
     "qs": "^6.10.3",
     "vue": "^3.0.0",
     "vue-axios": "^3.4.1",
@@ -25,8 +29,7 @@
     "less": "^4.1.2",
     "less-loader": "^6.2.0",
     "sass": "^1.26.5",
-    "sass-loader": "^8.0.2",
-    "vue-particles": "^1.0.9"
+    "sass-loader": "^8.0.2"
   },
   "browserslist": [
     "> 1%",

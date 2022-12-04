@@ -28,6 +28,25 @@ const routes = [
         component: () => import('../views/health/diabetes.vue')
       },
     ]
+  },
+  {
+    path: '/source',
+    name: 'Source',
+    component: () => import('../views/health/index.vue'),
+    children: [
+      {
+        // 当 /user/:id/profile 匹配成功，
+        // UserProfile 会被渲染在 User 的 <router-view> 中
+        path: 'jobs',
+        name: 'Jobs',
+        component: () => import('../views/source/Jobs.vue')
+      },
+      {
+        path: 'resume',
+        name: 'Resume',
+        component: () => import('../views/source/Resume.vue')
+      },
+    ]
   }
 ]
 

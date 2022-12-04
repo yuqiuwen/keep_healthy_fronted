@@ -1,77 +1,109 @@
 <template>
     <Nav />
     <div class="main">
-        <a-card hoverable :bordered="true" >
-        <a-form
-            ref="formRef"
-            name="custom-validation"
-            :model="formData"
-            :rules="rules"
-            v-bind="layout"
-            @finish="handleFinish"
-            @validate="handleValidate"
-            @finishFailed="handleFinishFailed"
+      <!-- <div>
+        <a-space>
+
+            <a-input v-model:value="query.glucose" placeholder="葡萄糖含量"></a-input>
+
+            <a-input v-model:value="query.age" placeholder="年龄"></a-input>
+
+          <a-button type="primary" @click="methods.fetchDiabetesData">查询</a-button>
+
+
+        </a-space>
+        <a-table
+            :columns="columns"
+            :row-key="id"
+            :data-source="diabetesData"
+            :scroll="{ y: 480 }"
+            :pagination="pagination"
+            :loading="loading"
+            size="small"
+            @change="handleTableChange"
         >
-          <a-form-item has-feedback label="Pregnancies" name="pregnancies">
-            <a-input-number v-model:value="formData.pregnancies" />
-          </a-form-item>
-          <a-form-item has-feedback label="Glucose" name="glucose">
-            <a-input-number v-model:value="formData.glucose" />
-          </a-form-item>
-          <a-form-item has-feedback label="BloodPressure" name="blood_pressure">
-            <a-input-number v-model:value="formData.blood_pressure" placeholder="mm Hg" />
-          </a-form-item>
-          <a-form-item has-feedback label="SkinThickness" name="skin_thickness">
-            <a-input-number v-model:value="formData.skin_thickness" placeholder="mm" />
-          </a-form-item>
-          <a-form-item has-feedback label="Insulin" name="insulin">
-            <a-input-number v-model:value="formData.insulin" placeholder="μU/ml"/>
-          </a-form-item>
-          <a-form-item has-feedback label="BMI" name="bmi">
-            <a-input-number v-model:value="formData.bmi" />
-          </a-form-item>
-          <a-form-item has-feedback label="PedigreeFunction" name="pedigree_function">
-            <a-input-number v-model:value="formData.pedigree_function" />
-          </a-form-item>
-          <a-form-item has-feedback label="Age" name="age">
-            <a-input-number v-model:value="formData.age" />
-          </a-form-item>
-          <a-form-item >
-            <a-button type="primary" block html-type="submit" @click="methods.startPred">Finish</a-button>
-          </a-form-item>
-        </a-form>
+          <template #bodyCell="{ column, text }">
+            <template v-if="column.dataIndex === 'create_time'">{{ text.replace(/T/g, ' ') }}</template>
+          </template>
+        </a-table>
+      </div> -->
+      <div class="card-container" style="width: 34%;">
+        <a-card hoverable :bordered="true" title="Condition" style="min-height: 620px">
+          <a-form
+              ref="formRef"
+              name="custom-validation"
+              :label-col="formStyle.labelCol" :wrapper-col="formStyle.wrapperCol"
+              :model="formData"
+              :rules="rules"
+              labelAlign="left"
+              v-bind="layout"
+              @finish="methods.startPred"
+              @validate="handleValidate"
+              @finishFailed="handleFinishFailed"
+          >
+                <a-form-item has-feedback label="Pregnancies" name="pregnancies"
+                >
+                  <a-input-number style="width: 150px" v-model:value="formData.pregnancies" />
+                </a-form-item>
+                <a-form-item has-feedback label="Glucose" name="glucose">
+                  <a-input-number style="width: 150px" v-model:value="formData.glucose" />
+                </a-form-item>
+
+                <a-form-item has-feedback label="BloodPressure" name="blood_pressure">
+                  <a-input-number style="width: 150px" v-model:value="formData.blood_pressure" placeholder="mm Hg" />
+                </a-form-item>
+   
+                <a-form-item has-feedback label="SkinThickness" name="skin_thickness">
+                  <a-input-number style="width: 150px" v-model:value="formData.skin_thickness" placeholder="mm" />
+                </a-form-item>
+     
+                <a-form-item has-feedback label="Insulin" name="insulin">
+                  <a-input-number style="width: 150px" v-model:value="formData.insulin" placeholder="μU/ml"/>
+                </a-form-item>
+
+                <a-form-item has-feedback label="BMI" name="bmi">
+                  <a-input-number style="width: 150px" v-model:value="formData.bmi" />
+                </a-form-item>
+
+                <a-form-item has-feedback label="PedigreeFunction" name="pedigree_function">
+                  <a-input-number style="width: 150px" v-model:value="formData.pedigree_function" />
+                </a-form-item>
+
+                <a-form-item has-feedback label="Age" name="age">
+                  <a-input-number style="width: 150px" v-model:value="formData.age" />
+                </a-form-item>
+
+
+                <a-form-item :wrapper-col="{ span: 24}">
+                  <a-button type="primary"
+                   block html-type="submit"
+                     :disabled="isLoading">Submit</a-button>
+                </a-form-item>
+          </a-form>
         </a-card>
+      </div>
 
-<!--            <a-table-->
-<!--                :columns="columns"-->
-<!--                :row-key="id"-->
-<!--                :data-source="diabetesData"-->
-<!--                :scroll="{ y: 180 }"-->
-<!--                :pagination="pagination"-->
-<!--                :loading="loading"-->
-<!--                size="small"-->
-<!--                @change="handleTableChange"-->
-<!--            >-->
-<!--              <template #bodyCell="{ column, text }">-->
-<!--                <template v-if="column.dataIndex === 'create_time'">{{ text.replace(/T/g, ' ') }}</template>-->
-<!--              </template>-->
-<!--            </a-table>-->
-
-    <a-card hoverable title="Result">
-      <a-result
-          v-if="prediction"
-          :status="predResult.status"
-          :title="predResult.Title"
-          :sub-title="predResult.subTitle"
-      >
-        <template #extra>
-          <a-button key="console" type="primary">View Analytics</a-button>
-          <a-button key="buy">Predict Again</a-button>
-        </template>
-      </a-result>
-    </a-card>
+      <div class="card-container" style="width: 50%;overflow-y:hidden">
+      <a-card hoverable title="Result" style="min-height: 620px;">
+        <a-spin tip="analyzing and calculating..."
+                :spinning="isLoading"
+                size="large"
+                style="height:500px;display: flex;flex-direction:column;justify-content: center; align-items: center">
+        <a-result
+            v-if="prediction && !isLoading"
+            :status="predResult.status"
+            :title="predResult.Title"
+            :sub-title="predResult.subTitle"
+        >
+          <template #extra>
+            <a-button key="console" type="primary">View Analytics</a-button>
+            <a-button key="buy">Predict Again</a-button>
+          </template>
+        </a-result>
+        </a-spin>
+      </a-card>
+      </div>
     </div>
-
 
 
 </template>
@@ -82,17 +114,23 @@
 import Nav from '../common/Nav'
 import { ref, reactive, onMounted } from 'vue';
 import axios from "axios";
-import { SettingOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons-vue';
+import { SettingOutlined, EditOutlined, EllipsisOutlined, InfoCircleOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
 
 const model = 'diabetes'
 const layout = {
   labelCol: {
-    span: 14,
+    span: 10,
   },
   wrapperCol: {
-    span: 24,
+    span: 12,
   },
 }
+let query = reactive({
+  glucose: '',
+  age: '',
+})
+const isLoading = ref(false)
 let predResult=reactive({
   Title:'',
   subTitle: '',
@@ -194,33 +232,62 @@ const formData = reactive({
   age: '',
 })
 let diabetesData = ref(null)
+const formStyle = {
+  labelCol: {
+        style: {
+          width: '250px',
+        },
+      },
+      wrapperCol: {
+        span: 14,
+      },
+}
 
 const methods = {
+  query() {
+    axios.get(model + '/')
+  },
   fetchDiabetesData() {
-    axios.get(model + '/fetch_diabetes_data/',).then(({data: res})=>{
+    console.log(query)
+    axios.get(model + '/fetch_diabetes_data/', {params: query}).then(({data: res})=>{
       console.log(res)
       diabetesData.value = res.results
     })
   },
   startPred() {
     console.log(formData)
-    axios.post(model + '/start_pred_diabetes/',formData).then(({data:res})=>{
-      let results = res.results[1]
-      prediction.value = results
-      console.log(prediction.value)
-      if (results<0.5) {
-        predResult.status = 'success'
-        predResult.Title = `${(results*100).toFixed(1)}% Good`
-        predResult.subTitle = 'Lower risk of diabetes and good health'
-      } else {
-        predResult.status = 'warning'
-        predResult.Title = `${(results*100).toFixed(1)}% Warning`
-        predResult.subTitle = 'Be alert to the risk of developing diabetes'
+    isLoading.value = true
+    console.log(isLoading.value)
+    setTimeout(()=>{
+      try{
+        axios.post(model + '/start_pred_diabetes/',formData).then(({data:res})=>{
+        isLoading.value = false
+        let results = res.results[1]
+        prediction.value = results
+        console.log(prediction.value)
+        if (results<0.5) {
+          predResult.status = 'success'
+          predResult.Title = `${(results*100).toFixed(1)}% Good`
+          predResult.subTitle = 'Lower risk of diabetes and good health'
+        } else {
+          predResult.status = 'warning'
+          predResult.Title = `${(results*100).toFixed(1)}% Warning`
+          predResult.subTitle = 'Be alert to the risk of developing diabetes'
+        }
+        console.log(parseFloat('22.4354365'))
+
+      }).catch(()=>{
+        isLoading.value = false
+        message.error("发生错误，请重试！")
+      })
+      }catch{
+        isLoading.value = false
+        message.error("发生错误，请重试！")
       }
+    },2000)
 
 
-      console.log(parseFloat('22.4354365'))
-    })
+
   }
 }
 
@@ -272,13 +339,16 @@ onMounted(methods.fetchDiabetesData)
 .main {
   width: 100%;
   height: calc(100vh - 64px);
-  display: grid;
-  grid-column-gap: 20px;
+  display: flex;
+  //grid-column-gap: 20px;
   padding: 20px;
-  grid-template-columns: minmax(200px, 22%) 1fr;
+  justify-content: center;
+  flex-wrap: wrap;
+  overflow: scroll;
+  //grid-template-columns: minmax(200px, 24%) 1fr;
   .card-container {
-    //display: grid;
-    //grid-template-columns: minmax(180px, 20%) 1fr;
+    flex: 0 1 460px;
+    margin: 5px;
   }
   //.left {
   //  max-height: 100%;

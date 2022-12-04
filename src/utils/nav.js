@@ -15,6 +15,19 @@ export default [
         ],
 
     },
+    {
+        title: "Data",
+        name: "Source",
+        meta: {
+            title: 'Source',
+            roles: ['user', 'admin'], //当前菜单哪些角色可以看到
+        },
+        children: [
+            {title: "Job", name: "Jobs", path: 'jobs' },
+            {title: "CV", name: "Resume", path: 'resume' },
+        ],
+
+    },
 
 
 ]

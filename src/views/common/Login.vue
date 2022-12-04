@@ -1,25 +1,5 @@
-<template>
+1<template>
   <div id="container">
-      <vue-particles
-          color="#fff"
-          :particleOpacity="0.7"
-          :particlesNumber="60"
-          shapeType="circle"
-          :particleSize="4"
-          linesColor="#fff"
-          :linesWidth="1"
-          :lineLinked="true"
-          :lineOpacity="0.4"
-          :linesDistance="150"
-          :moveSpeed="2"
-          :hoverEffect="true"
-          hoverMode="grab"
-          :clickEffect="true"
-          clickMode="push"
-          class="lizi"
-          style="height:100%"
-      >
-      </vue-particles>
     <div class="main">
       <div class="form">
         <h2 style="margin: 15px;">{{ otherObj.isLogin? 'Sign in': 'Sign Up' }}</h2>
@@ -27,7 +7,6 @@
             ref="formRef"
             :model="formState"
             name="normal_login"
-
             class="login-form"
             label
             :label-col="otherObj.labelCol"
@@ -35,14 +14,16 @@
             @finish="onFinish"
             @finishFailed="onFinishFailed"
         >
-            <a-form-item
-                label="User"
-                name="username"
-                :rules="[{ required: true, message: 'Please input your username!' }]"
-            >
-              <a-input v-model:value="formState.username">
-              </a-input>
-            </a-form-item>
+
+              <a-form-item
+                  label="User"
+                  name="username"
+                  :rules="[{ required: true, message: 'Please input your username!' }]"
+              >
+                <a-input v-model:value="formState.username"></a-input>
+              </a-form-item>
+
+
             <a-form-item
                 label="Password"
                 name="password"
@@ -59,34 +40,36 @@
             <a-input v-model:value="formState.email">
             </a-input>
           </a-form-item>
-          <a-row :gutter="16" v-if="!otherObj.isLogin">
-            <a-col :span="16">
+
               <a-form-item
+                  v-if="!otherObj.isLogin"
                   label="Code"
                   name="email"
                   :rules="[{ required: true, message: 'Please input verify code!' }]"
               >
-                <a-input v-model:value="formState.verifyCode" placeholder="verify code">
-                </a-input>
+                <a-row :gutter="16">
+                <a-col :span="16">
+                  <a-input v-model:value="formState.verifyCode" placeholder="verify code">
+                  </a-input>
+                </a-col>
+                <a-col :span="8">
+                  <a-button type="primary" @click="sendMail" :disabled="!show">
+                    <span v-show="show">send</span>
+                    <span v-show="!show" class="count">{{ count }} s</span>
+                  </a-button>
+                </a-col>
+                </a-row>
               </a-form-item>
-            </a-col>
-            <a-col :span="8">
-              <a-button type="primary" @click="sendMail" :disabled="!show">
-                <span v-show="show">send</span>
-                <span v-show="!show" class="count">{{ count }} s later resend</span>
-              </a-button>
-            </a-col>
-          </a-row>
+
               <a-form-item name="is_remember" no-style>
                 <a-checkbox v-model:checked="formState.is_remember" >remember me</a-checkbox>
               </a-form-item>
-              <a-button type="link" style="color:black">forger password</a-button>
           <br>
             <a-form-item>
               <a-button block :disabled="disabled" @click="onsubmit" type="primary" html-type="submit" class="login-form-button">
-                {{ otherObj.isLogin? 'LOGININ NOW': 'Sign Up' }}
+                {{ otherObj.isLogin? 'LOGIN': 'Sign Up' }}
               </a-button>
-              <a-button type="link" block @click="register">{{  otherObj.isLogin? 'or register now': 'return login'}}</a-button>
+              <a-button type="link" style="color: #528ec2" block @click="register">{{  otherObj.isLogin? 'or register now': 'return login'}}</a-button>
             </a-form-item>
         </a-form>
       </div>
@@ -94,7 +77,7 @@
   </div>
 </template>
 <script setup>
-  import {toRefs,ref, defineComponent, reactive, computed, getCurrentInstance, onBeforeUnmount} from 'vue'
+  import {toRefs,ref, reactive, computed} from 'vue'
   import { useRouter, useRoute } from "vue-router"
   import {useStore} from 'vuex'
   import axios from "axios";
@@ -113,7 +96,7 @@
     isLogin: true,
     labelCol: {
       style: {
-        width: '80px',
+        width: '100px',
       },
     },
   })
@@ -152,11 +135,13 @@
     }
     axios.post('users/send_email/',{email: formState.email, username: formState.username}).then(({data: res})=>{
       formState.task_id = res.results
+      if (res.results.code===500)
       console.log(formState)
     }).catch(e=>{
       show.value = true
       clearInterval(timer.value)
-      message.error(e)
+      timer.value = null
+      message.error('发送失败')
     })
   }
 
@@ -181,16 +166,17 @@
           store.commit('set_token', res.results)
           store.commit('set_token', {is_login: true})
         }
-        message.success(successInfo)
+        // 跳转后页面未刷新，还不知道怎么解决
         router.push({ name:'Home' })
+        message.success(successInfo)
       } else {
-        message.error(errorInfo)
         store.commit('del_token')
         store.commit('del_user')
+        return message.error(res.results.msg)
       }
-    }).catch((e)=> {
-      console.log(e)
-      message.error('发生错误')
+    }).catch((err)=> {
+      console.log(err)
+      message.error('login failed')
     })
   }
   function register(){
@@ -201,34 +187,24 @@
 <style scoped lang="scss">
 #container {
   width: 100%;
-  height: 100%;
+  height:calc(100vh );
   display: grid;
-  place-items: end;
-  align-items: center;
-  justify-content: flex-end;
-  //background: #3D5A80;
-  background: url("../../assets/img/login_bg.jpg") no-repeat center;
-  overflow-y: hidden;
-  padding: 0;
-  margin: 0;
-  //background-size: cover;
-  //-webkit-background-size: cover;
-  //-o-background-size: cover;
+  place-items:center;
+  justify-content: center;
+  background: url("../../assets/img/login_bg.jpg") center center no-repeat;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
 
   .main {
-    width: 400px;
-    max-height: 430px;
-    border-radius: 10px;
-    background: rgba(244,247,246,0.9);
-    position: absolute;
-    z-index: 99;
-    margin-right: 10%;
+    border-radius: 20px;
+    background: rgba(245, 243, 243, 0.5);
+    display: -webkit-flex;
+    width: 450px;
+    place-items:center;
+    justify-content: center;
     .form {
-      width: 400px;
-      height: 60%;
-      top: 20%;
       padding: 0 40px;
-      display: grid;
       color: white;
     }
   }
