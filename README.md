@@ -1,5 +1,5 @@
 # keep_healthy_fronted
-
+糖尿病AI诊断系统前端代码
 ## Project setup
 ```
 npm install
